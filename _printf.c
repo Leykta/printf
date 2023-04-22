@@ -25,7 +25,7 @@ int _printf(const char *format, ...)
 		{
 			if (format[tmp + 1] == '\0')
 			{	
-				print_buf(buffer, ibuf), free(buffer), va_end(arguments);
+				print(buffer, ibuf), free(buffer), va_end(arguments);
 				return (-1);
 			}
 			else
@@ -35,7 +35,7 @@ int _printf(const char *format, ...)
 				{
 					if (format[tmp + 1] == ' ' && !format[tmp + 2])
 						return (-1);
-					handl_buf(buffer, format[tmp], ibuf), len++, tmp--;
+					handle(buffer, format[tmp], ibuf), len++, tmp--;
 				}
 				else
 				{
@@ -45,10 +45,42 @@ int _printf(const char *format, ...)
 			} tmp++;
 		}
 		else
-			handl_buf(buffer, format[tmp], ibuf), len++;
+			handle(buffer, format[tmp], ibuf), len++;
 		for (ibuf = len; ibuf > 1024; ibuf -= 1024)
 			;
 	}
-	print_buf(buffer, ibuf), free(buffer), va_end(arguments);
+	print(buffer, ibuf), free(buffer), va_end(arguments);
 	return (len);
+}
+
+/**
+ * print_buf - prints buffer
+ * @buf: buffer pointer
+ * @nbuf: number of bytes to print
+ * Return: number of bytes printed.
+ */
+
+int print(char *buf, unsigned int nbuf)
+{
+	return (write(1, buf, nbuf));
+}
+
+/**
+ * handl_buf - concatenates the buffer characters
+ * @buf: buffer pointer
+ * @c: charcter to concatenate
+ * @ibuf: index of buffer pointer
+ * Return: index of buffer pointer.
+ */
+
+unsigned int handle(char *buf, char c, unsigned int ibuf)
+{
+	if (ibuf == 1024)
+	{
+		print_buf(buf, ibuf);
+		ibuf = 0;
+	}
+	buf[ibuf] = c;
+	ibuf++;
+	return (ibuf);
 }
